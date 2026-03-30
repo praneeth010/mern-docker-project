@@ -32,7 +32,7 @@ jobs:
           cd frontend
           npm install
 
-      # 5️⃣ Build React App
+      # 5️⃣ Build Frontend
       - name: Build Frontend
         run: |
           cd frontend
@@ -42,17 +42,33 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 7️⃣ Build Docker Images (FIXED)
+      # 7️⃣ Login to Docker Hub
+      - name: Docker Login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      # 8️⃣ Build Images
       - name: Build Docker Images
         run: |
           docker compose build
 
-      # 8️⃣ Run Containers (Optional test)
+      # 9️⃣ Tag Images
+      - name: Tag Images
+        run: |
+          docker tag mern-docker-complete-backend ${{ secrets.DOCKER_USERNAME }}/mern-backend:latest
+          docker tag mern-docker-complete-frontend ${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest
+
+      # 🔟 Push Images
+      - name: Push Docker Images
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/mern-backend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest
+
+      # 1️⃣1️⃣ Run containers (optional)
       - name: Run Containers
         run: |
           docker compose up -d
 
-      # 9️⃣ Check running containers
+      # 1️⃣2️⃣ Verify containers
       - name: Check containers
         run: |
           docker ps
