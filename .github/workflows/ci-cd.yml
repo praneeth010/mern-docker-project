@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Setup Node
+      # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -32,26 +32,27 @@ jobs:
           cd frontend
           npm install
 
-      # 5️⃣ Build Frontend
-      - name: Build React App
+      # 5️⃣ Build React App
+      - name: Build Frontend
         run: |
           cd frontend
           npm run build
 
-      # 6️⃣ Build Docker Images
+      # 6️⃣ Setup Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 7️⃣ Build Docker Images (FIXED)
       - name: Build Docker Images
         run: |
-          docker-compose build
-          
-      # 7️⃣ Login to Docker Hub
-      - name: Docker Login
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker compose build
 
-      # 8️⃣ Push Images
-      - name: Push Docker Images
+      # 8️⃣ Run Containers (Optional test)
+      - name: Run Containers
         run: |
-          docker tag mern-docker-project-backend ${{ secrets.DOCKER_USERNAME }}/mern-backend:latest
-          docker tag mern-docker-project-frontend ${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest
+          docker compose up -d
 
-          docker push ${{ secrets.DOCKER_USERNAME }}/mern-backend:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/mern-frontend:latest
+      # 9️⃣ Check running containers
+      - name: Check containers
+        run: |
+          docker ps
