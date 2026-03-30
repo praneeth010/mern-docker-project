@@ -3,6 +3,7 @@ version: "3.8"
 services:
   backend:
     build: ./backend
+    image: mern-backend   # ✅ add this
     ports:
       - "5000:5000"
     env_file:
@@ -12,6 +13,7 @@ services:
 
   frontend:
     build: ./frontend
+    image: mern-frontend   # ✅ add this
     ports:
       - "80:80"
     depends_on:
