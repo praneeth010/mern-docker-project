@@ -1,9 +1,8 @@
-version: "3.8"
-
 services:
   backend:
     build: ./backend
-    image: mern-backend   # ✅ add this
+    image: mern-backend
+    container_name: mern-backend-container
     ports:
       - "5000:5000"
     env_file:
@@ -13,7 +12,8 @@ services:
 
   frontend:
     build: ./frontend
-    image: mern-frontend   # ✅ add this
+    image: mern-frontend
+    container_name: mern-frontend-container
     ports:
       - "80:80"
     depends_on:
@@ -21,6 +21,9 @@ services:
 
   mongo:
     image: mongo:6
+    container_name: mongo-container
+    ports:
+      - "27017:27017"
     volumes:
       - mongo_data:/data/db
 
